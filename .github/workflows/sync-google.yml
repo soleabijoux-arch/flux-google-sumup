@@ -1,0 +1,34 @@
+name: Automatisation Flux Google Shopping
+
+on:
+  schedule:
+    # S'exécute automatiquement chaque nuit à 03h00 UTC
+    - cron: '0 3 * * *'
+  # Permet d'exécuter le script manuellement avec un bouton
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Récupérer le code du dépôt
+        uses: actions/checkout@v4
+
+      - name: Configurer Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Exécuter la génération du flux XML
+        run: python generate_feed.py
+
+      - name: Sauvegarder et publier le fichier XML mis à jour
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add google-shopping.xml
+          git commit -m "Mise à jour automatique du flux Google Shopping" || exit 0
+          git push
