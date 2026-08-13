@@ -2,9 +2,7 @@ name: Automatisation Flux Google Shopping
 
 on:
   schedule:
-    # S'exécute automatiquement chaque nuit à 03h00 UTC
     - cron: '0 3 * * *'
-  # Permet d'exécuter le script manuellement avec un bouton
   workflow_dispatch:
 
 jobs:
@@ -21,6 +19,9 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.x'
+
+      - name: Installer les dépendances
+        run: pip install requests
 
       - name: Exécuter la génération du flux XML
         run: python generate_feed.py
