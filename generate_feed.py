@@ -1,137 +1,121 @@
 import requests
+from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
-import sys
+import re
 
-MERCHANT_CODE = "M7QFQAMW"
 BASE_URL = "https://solea-breizh-bijoux.fr"
-API_URL = f"https://store.sumup.com/api/v1/merchants/{MERCHANT_CODE}/products"
-
-def get_image_url(p):
-    """Extrait une URL d'image valide et complète pour Google."""
-    images = p.get("images", []) or p.get("media", [])
-    if not images:
-        return f"{BASE_URL}/images/logo.png" # Image de secours si aucune image trouvée
-        
-    img_data = images[0]
-    url = ""
-    if isinstance(img_data, dict):
-        url = img_data.get("url") or img_data.get("src") or img_data.get("path", "")
-    elif isinstance(img_data, str):
-        url = img_data
-
-    if not url:
-        return f"{BASE_URL}/images/logo.png"
-
-    if url.startswith("http://") or url.startswith("https://"):
-        return url
-    elif url.startswith("//"):
-        return f"https:{url}"
-    elif url.startswith("/"):
-        return f"{BASE_URL}{url}"
-    else:
-        return f"https://images.sumup.com/{url}"
 
 def generate_xml():
-    print("➜ Interrogation de l'API SumUp...")
+    print("➜ Extraction du catalogue depuis la boutique en ligne...")
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'application/json',
-        'Referer': f"{BASE_URL}/"
+        'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
     }
 
+    products = []
+    
     try:
-        response = requests.get(API_URL, headers=headers, timeout=30)
-        print(f"Code HTTP SumUp: {response.status_code}")
-        response.raise_for_status()
-        data = response.json()
+        # Parcours de la page principale de produits
+        response = requests.get(f"{BASE_URL}/produits", headers=headers, timeout=30)
+        if response.status_code != 200:
+            response = requests.get(BASE_URL, headers=headers, timeout=30)
+            
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Recherche des liens de produits et cartes produits dans le DOM
+        cards = soup.find_all(['article', 'div'], class_=re.compile(r'product|card|item', re.I))
+        if not cards:
+            cards = soup.find_all('a', href=re.compile(r'/product/|/produit/'))
+
+        seen_titles = set()
+
+        for idx, card in enumerate(cards):
+            text = card.get_text(separator='|', strip=True)
+            lines = [t.strip() for t in text.split('|') if t.strip()]
+            
+            # Extraction du prix
+            price_match = re.search(r'(\d+[\.,]\d{2})\s*€', text)
+            if not price_match:
+                continue
+                
+            price_str = price_match.group(1).replace(',', '.')
+            price_val = float(price_str)
+
+            # Identification du titre
+            title = None
+            for line in lines:
+                if line != price_match.group(0) and len(line) > 2 and not line.isdigit() and '€' not in line:
+                    title = line
+                    break
+
+            if not title or title in seen_titles:
+                continue
+
+            seen_titles.add(title)
+
+            # Extraction du lien produit
+            link_tag = card if card.name == 'a' else card.find('a', href=True)
+            prod_link = BASE_URL
+            if link_tag and link_tag.get('href'):
+                href = link_tag['href']
+                prod_link = href if href.startswith('http') else f"{BASE_URL}{href}"
+
+            # Extraction de l'image
+            img_tag = card.find('img')
+            img_link = f"{BASE_URL}/images/logo.png"
+            if img_tag:
+                src = img_tag.get('src') or img_tag.get('data-src') or ''
+                if src:
+                    if src.startswith('http'):
+                        img_link = src
+                    elif src.startswith('//'):
+                        img_link = f"https:{src}"
+                    else:
+                        img_link = f"{BASE_URL}{src}"
+
+            products.append({
+                'id': f"bijou-{idx+1}",
+                'title': title,
+                'price': price_val,
+                'link': prod_link,
+                'image': img_link
+            })
+
     except Exception as e:
-        print(f"❌ Erreur lors de la requête API : {e}")
-        data = []
+        print(f"❌ Erreur lors du scraping du site : {e}")
 
-    # Extraction de la liste des produits
-    if isinstance(data, list):
-        products = data
-    elif isinstance(data, dict):
-        products = data.get('products') or data.get('items') or data.get('data') or []
-    else:
-        products = []
+    print(f"✓ {len(products)} produits extraits de la boutique.")
 
-    print(f"✓ {len(products)} produits bruts extraits de l'API.")
-
-    # Balises XML racine Google Shopping
+    # Construction du flux XML Google Shopping
     rss = ET.Element("rss", version="2.0", **{"xmlns:g": "http://base.google.com/ns/1.0"})
     channel = ET.SubElement(rss, "channel")
     
     ET.SubElement(channel, "title").text = "Solea Breizh Bijoux"
     ET.SubElement(channel, "link").text = BASE_URL
-    ET.SubElement(channel, "description").text = "Boutique de bijoux artisanaux Solea Breizh Bijoux"
+    ET.SubElement(channel, "description").text = "Bijoux artisanaux Solea Breizh Bijoux"
 
-    valid_count = 0
-
-    for idx, p in enumerate(products):
-        if not isinstance(p, dict):
-            continue
-
-        name = (p.get("name") or p.get("title") or "").strip()
-        if not name:
-            continue
-
+    for p in products:
         item = ET.SubElement(channel, "item")
-
-        # 1. ID Produit (Obligatoire)
-        prod_id = str(p.get("id") or p.get("sku") or p.get("code") or f"bijou-{idx+1}")
-        ET.SubElement(item, "g:id").text = prod_id
-
-        # 2. Titre (Obligatoire)
-        ET.SubElement(item, "g:title").text = name
-
-        # 3. Description (Obligatoire pour Google)
-        desc = (p.get("description") or p.get("summary") or "").strip()
-        if not desc or len(desc) < 5:
-            desc = f"{name} - Magnifique bijou de la collection Solea Breizh Bijoux."
-        ET.SubElement(item, "g:description").text = desc
-
-        # 4. Lien vers la page du produit (Obligatoire)
-        slug = p.get("slug") or p.get("url_key") or ""
-        if slug:
-            link = f"{BASE_URL}/product/{slug}" if not slug.startswith("http") else slug
-        else:
-            link = BASE_URL
-        ET.SubElement(item, "g:link").text = link
-
-        # 5. Image (Obligatoire)
-        ET.SubElement(item, "g:image_link").text = get_image_url(p)
-
-        # 6. Prix (Obligatoire - Ex: "14.00 EUR")
-        price_raw = p.get("price") or p.get("unit_price") or 0
-        try:
-            price_val = float(price_raw)
-        except (ValueError, TypeError):
-            price_val = 0.0
-            
-        ET.SubElement(item, "g:price").text = f"{price_val:.2f} EUR"
-
-        # 7. Attributs obligatoires de conformité Google Shopping
-        ET.SubElement(item, "g:condition").text = "new"
         
-        in_stock = p.get("in_stock", True)
-        ET.SubElement(item, "g:availability").text = "in_stock" if in_stock else "out_of_stock"
-
-        # Marque & Codes d'identification (GTIN/MPN non requis pour l'artisanat)
+        ET.SubElement(item, "g:id").text = p['id']
+        ET.SubElement(item, "g:title").text = p['title']
+        ET.SubElement(item, "g:description").text = f"{p['title']} - Bijou artisanal par Solea Breizh Bijoux."
+        ET.SubElement(item, "g:link").text = p['link']
+        ET.SubElement(item, "g:image_link").text = p['image']
+        ET.SubElement(item, "g:price").text = f"{p['price']:.2f} EUR"
+        ET.SubElement(item, "g:condition").text = "new"
+        ET.SubElement(item, "g:availability").text = "in_stock"
         ET.SubElement(item, "g:brand").text = "Solea Breizh Bijoux"
         ET.SubElement(item, "g:identifier_exists").text = "no"
 
-        valid_count += 1
-
-    # Formatage XML final
     xml_str = minidom.parseString(ET.tostring(rss, encoding='utf-8')).toprettyxml(indent="  ")
 
     with open("google-shopping.xml", "w", encoding="utf-8") as f:
         f.write(xml_str)
 
-    print(f"✓ Terminé : {valid_count} produits intégrés au fichier 'google-shopping.xml'.")
+    print(" Fichier 'google-shopping.xml' généré avec succès !")
 
 if __name__ == "__main__":
     generate_xml()
