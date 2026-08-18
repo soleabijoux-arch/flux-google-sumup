@@ -3,11 +3,63 @@ from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import re
+import json
 
 BASE_URL = "https://solea-breizh-bijoux.fr"
 
-def get_product_details_and_image(product_url, session, headers):
-    """Visite la page produit pour récupérer la véritable URL d'image SumUp et la description."""
+def extract_image_url(soup, product_url):
+    """Extrait l'URL d'image la plus précise possible depuis la page produit SumUp."""
+    
+    # 1. Recherche dans les données JSON-LD (données structurées e-commerce)
+    for script in soup.find_all('script', type='application/ld+json'):
+        try:
+            data = json.loads(script.string)
+            if isinstance(data, dict):
+                if 'image' in data and data['image']:
+                    img = data['image']
+                    return img[0] if isinstance(img, list) else img
+            elif isinstance(data, list):
+                for item in data:
+                    if isinstance(item, dict) and 'image' in item and item['image']:
+                        img = item['image']
+                        return img[0] if isinstance(img, list) else img
+        except Exception:
+            pass
+
+    # 2. Recherche dans la balise OpenGraph (og:image)
+    og_img = soup.find('meta', property='og:image') or soup.find('meta', attrs={'name': 'og:image'})
+    if og_img and og_img.get('content'):
+        return og_img['content'].strip()
+
+    # 3. Balayage des balises <img> et srcset dans le DOM
+    for img in soup.find_all('img'):
+        srcset = img.get('srcset', '')
+        if srcset:
+            sources = [s.strip().split(' ') for s in srcset.split(',') if s.strip()]
+            if sources:
+                best_src = sources[-1][0]
+                if best_src and not best_src.startswith('data:'):
+                    return best_src
+
+        src = img.get('src') or img.get('data-src') or img.get('data-original') or ''
+        if src and not src.startswith('data:') and any(k in src.lower() for k in ['product', 'item', 'media', 'images', 'uploads', 'assets', 'sumup']):
+            return src
+
+    return ""
+
+def format_url(url):
+    """Nettoie et formate proprement l'URL de l'image."""
+    if not url:
+        return ""
+    if url.startswith('//'):
+        return f"https:{url}"
+    elif url.startswith('/'):
+        return f"{BASE_URL}{url}"
+    elif not url.startswith('http'):
+        return f"{BASE_URL}/{url}"
+    return url
+
+def get_product_details(product_url, session, headers):
     try:
         resp = session.get(product_url, headers=headers, timeout=15)
         if resp.status_code != 200:
@@ -15,43 +67,24 @@ def get_product_details_and_image(product_url, session, headers):
             
         soup = BeautifulSoup(resp.text, 'html.parser')
         
-        image_url = ""
-        # 1. Image principale OpenGraph (recommandée par SumUp)
-        og_image = soup.find('meta', property='og:image') or soup.find('meta', attrs={'name': 'og:image'})
-        if og_image and og_image.get('content'):
-            image_url = og_image['content'].strip()
-            
-        # 2. Balayage classique si absente
-        if not image_url:
-            for img in soup.find_all('img'):
-                src = img.get('src') or img.get('data-src') or ''
-                if src and not src.startswith('data:') and any(k in src.lower() for k in ['product', 'item', 'media', 'images', 'uploads', 'assets']):
-                    image_url = src
-                    break
+        # Extraction Image & Description
+        raw_image = extract_image_url(soup, product_url)
+        image_url = format_url(raw_image)
 
-        if image_url:
-            if image_url.startswith('//'):
-                image_url = f"https:{image_url}"
-            elif image_url.startswith('/'):
-                image_url = f"{BASE_URL}{image_url}"
-            elif not image_url.startswith('http'):
-                image_url = f"{BASE_URL}/{image_url}"
-
-        # Description
         og_desc = soup.find('meta', property='og:description')
         desc = og_desc['content'].strip() if og_desc and og_desc.get('content') else ""
 
         return image_url, desc
 
     except Exception as e:
-        print(f"⚠️ Erreur lors de l'accès à {product_url}: {e}")
+        print(f"⚠️ Erreur lors de la lecture de {product_url}: {e}")
         return "", ""
 
 def generate_xml():
-    print("➜ Extraction des bijoux et génération du flux Google Shopping...")
+    print("➜ Analyse approfondie du catalogue Solea Breizh Bijoux...")
     
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
         'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
     }
 
@@ -97,7 +130,7 @@ def generate_xml():
 
             seen_titles.add(title)
 
-            # Lien unique
+            # Lien produit
             link_tag = card if card.name == 'a' else card.find('a', href=True)
             prod_link = BASE_URL
             if link_tag and link_tag.get('href'):
@@ -107,9 +140,9 @@ def generate_xml():
             # Extraction image et description
             img_url, hd_desc = "", ""
             if prod_link != BASE_URL:
-                img_url, hd_desc = get_product_details_and_image(prod_link, session, headers)
+                img_url, hd_desc = get_product_details(prod_link, session, headers)
 
-            # Couleur
+            # Attribution couleur
             title_lower = title.lower()
             color = "Doré"
             if "argent" in title_lower:
@@ -123,7 +156,7 @@ def generate_xml():
             elif "noir" in title_lower:
                 color = "Noir"
 
-            description = hd_desc or f"{title} - Création artisanale exclusive par Solea Breizh Bijoux."
+            description = hd_desc or f"{title} - Création artisanale en acier inoxydable par Solea Breizh Bijoux."
 
             products.append({
                 'id': f"bijou-{idx+1}",
@@ -136,17 +169,17 @@ def generate_xml():
             })
 
     except Exception as e:
-        print(f"❌ Erreur de traitement : {e}")
+        print(f"❌ Erreur lors du traitement du catalogue : {e}")
 
-    print(f"✓ {len(products)} produits extraits.")
+    print(f"✓ {len(products)} bijoux détectés.")
 
-    # Flux XML
+    # Flux XML RSS 2.0
     rss = ET.Element("rss", version="2.0", **{"xmlns:g": "http://base.google.com/ns/1.0"})
     channel = ET.SubElement(rss, "channel")
     
     ET.SubElement(channel, "title").text = "Solea Breizh Bijoux"
     ET.SubElement(channel, "link").text = BASE_URL
-    ET.SubElement(channel, "description").text = "Catalogue de bijoux artisanaux Solea Breizh Bijoux"
+    ET.SubElement(channel, "description").text = "Bijoux en acier inoxydable Solea Breizh Bijoux"
 
     for p in products:
         item = ET.SubElement(channel, "item")
@@ -156,6 +189,7 @@ def generate_xml():
         ET.SubElement(item, "g:description").text = p['description']
         ET.SubElement(item, "g:link").text = p['link']
         
+        # Champ obligatoire de l'image
         if p['image']:
             ET.SubElement(item, "g:image_link").text = p['image']
             
@@ -165,7 +199,7 @@ def generate_xml():
         ET.SubElement(item, "g:brand").text = "Solea Breizh Bijoux"
         ET.SubElement(item, "g:identifier_exists").text = "no"
 
-        # Attributs requis par Google
+        # Champs obligatoires de conformité Google
         ET.SubElement(item, "g:shipping_weight").text = "0.1 kg"
         ET.SubElement(item, "g:age_group").text = "adult"
         ET.SubElement(item, "g:gender").text = "female"
@@ -176,7 +210,7 @@ def generate_xml():
     with open("google-shopping.xml", "w", encoding="utf-8") as f:
         f.write(xml_str)
 
-    print("✓ Fichier 'google-shopping.xml' généré avec succès !")
+    print("✓ Le fichier 'google-shopping.xml' a été mis à jour avec succès !")
 
 if __name__ == "__main__":
     generate_xml()
