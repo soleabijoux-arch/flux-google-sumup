@@ -3,85 +3,56 @@ from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import re
-import json
+import unicodedata
 
 BASE_URL = "https://solea-breizh-bijoux.fr"
 
-def extract_image_url(soup, product_url):
-    """Extrait l'URL d'image la plus précise possible depuis la page produit SumUp."""
-    
-    # 1. Recherche dans les données JSON-LD (données structurées e-commerce)
-    for script in soup.find_all('script', type='application/ld+json'):
-        try:
-            data = json.loads(script.string)
-            if isinstance(data, dict):
-                if 'image' in data and data['image']:
-                    img = data['image']
-                    return img[0] if isinstance(img, list) else img
-            elif isinstance(data, list):
-                for item in data:
-                    if isinstance(item, dict) and 'image' in item and item['image']:
-                        img = item['image']
-                        return img[0] if isinstance(img, list) else img
-        except Exception:
-            pass
-
-    # 2. Recherche dans la balise OpenGraph (og:image)
-    og_img = soup.find('meta', property='og:image') or soup.find('meta', attrs={'name': 'og:image'})
-    if og_img and og_img.get('content'):
-        return og_img['content'].strip()
-
-    # 3. Balayage des balises <img> et srcset dans le DOM
-    for img in soup.find_all('img'):
-        srcset = img.get('srcset', '')
-        if srcset:
-            sources = [s.strip().split(' ') for s in srcset.split(',') if s.strip()]
-            if sources:
-                best_src = sources[-1][0]
-                if best_src and not best_src.startswith('data:'):
-                    return best_src
-
-        src = img.get('src') or img.get('data-src') or img.get('data-original') or ''
-        if src and not src.startswith('data:') and any(k in src.lower() for k in ['product', 'item', 'media', 'images', 'uploads', 'assets', 'sumup']):
-            return src
-
-    return ""
-
-def format_url(url):
-    """Nettoie et formate proprement l'URL de l'image."""
-    if not url:
-        return ""
-    if url.startswith('//'):
-        return f"https:{url}"
-    elif url.startswith('/'):
-        return f"{BASE_URL}{url}"
-    elif not url.startswith('http'):
-        return f"{BASE_URL}/{url}"
-    return url
+def slugify(value):
+    """Transforme un titre en URL SumUp valide (ex: 'Bague Bleuenn' -> 'bague-bleuenn')"""
+    value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('utf-8')
+    value = re.sub(r'[^\w\s-]', '', value.lower())
+    return re.sub(r'[-\s]+', '-', value).strip('-')
 
 def get_product_details(product_url, session, headers):
+    """Tente de récupérer l'image et la description sur la fiche produit."""
     try:
-        resp = session.get(product_url, headers=headers, timeout=15)
+        resp = session.get(product_url, headers=headers, timeout=10)
         if resp.status_code != 200:
             return "", ""
             
         soup = BeautifulSoup(resp.text, 'html.parser')
         
-        # Extraction Image & Description
-        raw_image = extract_image_url(soup, product_url)
-        image_url = format_url(raw_image)
+        # 1. Image OpenGraph
+        image_url = ""
+        og_img = soup.find('meta', property='og:image') or soup.find('meta', attrs={'name': 'og:image'})
+        if og_img and og_img.get('content'):
+            image_url = og_img['content'].strip()
 
+        # 2. Image dans le DOM SumUp
+        if not image_url:
+            for img in soup.find_all('img'):
+                src = img.get('src') or img.get('data-src') or ''
+                if src and 'images.sumup.com' in src:
+                    image_url = src
+                    break
+
+        if image_url:
+            if image_url.startswith('//'):
+                image_url = f"https:{image_url}"
+            elif image_url.startswith('/'):
+                image_url = f"{BASE_URL}{image_url}"
+
+        # Description OpenGraph
         og_desc = soup.find('meta', property='og:description')
         desc = og_desc['content'].strip() if og_desc and og_desc.get('content') else ""
 
         return image_url, desc
 
     except Exception as e:
-        print(f"⚠️ Erreur lors de la lecture de {product_url}: {e}")
         return "", ""
 
 def generate_xml():
-    print("➜ Analyse approfondie du catalogue Solea Breizh Bijoux...")
+    print("➜ Extraction et reconstruction dynamique des fiches produits...")
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -98,6 +69,7 @@ def generate_xml():
             
         soup = BeautifulSoup(response.text, 'html.parser')
         
+        # Récupération de tous les blocs contenant des textes/prix
         cards = soup.find_all(['article', 'div'], class_=re.compile(r'product|card|item', re.I))
         if not cards:
             cards = soup.find_all('a', href=re.compile(r'/product/|/produit/|/article/'))
@@ -108,7 +80,7 @@ def generate_xml():
             text = card.get_text(separator='|', strip=True)
             lines = [t.strip() for t in text.split('|') if t.strip()]
             
-            # Prix
+            # Détection du prix
             price_match = re.search(r'(\d+[\.,]\d{2})\s*€', text)
             if not price_match:
                 continue
@@ -116,7 +88,7 @@ def generate_xml():
             price_str = price_match.group(1).replace(',', '.')
             price_val = float(price_str)
 
-            # Titre
+            # Détection du titre du bijou
             title = None
             for line in lines:
                 if line.lower() in ['épuisé', 'epuise', 'out of stock', 'en stock']:
@@ -130,19 +102,20 @@ def generate_xml():
 
             seen_titles.add(title)
 
-            # Lien produit
+            # 1. Extraction ou reconstruction du lien produit
             link_tag = card if card.name == 'a' else card.find('a', href=True)
-            prod_link = BASE_URL
-            if link_tag and link_tag.get('href'):
+            prod_link = ""
+            if link_tag and link_tag.get('href') and '/product/' in link_tag['href']:
                 href = link_tag['href']
                 prod_link = href if href.startswith('http') else f"{BASE_URL}{href}"
+            else:
+                # Reconstruction automatique de l'URL pour SumUp
+                prod_link = f"{BASE_URL}/product/{slugify(title)}"
 
-            # Extraction image et description
-            img_url, hd_desc = "", ""
-            if prod_link != BASE_URL:
-                img_url, hd_desc = get_product_details(prod_link, session, headers)
+            # 2. Récupération de l'image et de la description
+            img_url, hd_desc = get_product_details(prod_link, session, headers)
 
-            # Attribution couleur
+            # Couleur
             title_lower = title.lower()
             color = "Doré"
             if "argent" in title_lower:
@@ -169,11 +142,11 @@ def generate_xml():
             })
 
     except Exception as e:
-        print(f"❌ Erreur lors du traitement du catalogue : {e}")
+        print(f"❌ Erreur lors du scraping : {e}")
 
-    print(f"✓ {len(products)} bijoux détectés.")
+    print(f"✓ {len(products)} bijoux extraits.")
 
-    # Flux XML RSS 2.0
+    # Génération du flux XML
     rss = ET.Element("rss", version="2.0", **{"xmlns:g": "http://base.google.com/ns/1.0"})
     channel = ET.SubElement(rss, "channel")
     
@@ -189,7 +162,7 @@ def generate_xml():
         ET.SubElement(item, "g:description").text = p['description']
         ET.SubElement(item, "g:link").text = p['link']
         
-        # Champ obligatoire de l'image
+        # Inscription obligatoire de l'image (si disponible)
         if p['image']:
             ET.SubElement(item, "g:image_link").text = p['image']
             
@@ -199,7 +172,7 @@ def generate_xml():
         ET.SubElement(item, "g:brand").text = "Solea Breizh Bijoux"
         ET.SubElement(item, "g:identifier_exists").text = "no"
 
-        # Champs obligatoires de conformité Google
+        # Attributs requis par Google
         ET.SubElement(item, "g:shipping_weight").text = "0.1 kg"
         ET.SubElement(item, "g:age_group").text = "adult"
         ET.SubElement(item, "g:gender").text = "female"
@@ -210,7 +183,7 @@ def generate_xml():
     with open("google-shopping.xml", "w", encoding="utf-8") as f:
         f.write(xml_str)
 
-    print("✓ Le fichier 'google-shopping.xml' a été mis à jour avec succès !")
+    print("✓ Fichier 'google-shopping.xml' régénéré avec succès !")
 
 if __name__ == "__main__":
     generate_xml()
