@@ -3,27 +3,46 @@ from bs4 import BeautifulSoup
 import xml.etree.ElementTree as ET
 from xml.dom import minidom
 import re
+import urllib.parse
 
 BASE_URL = "https://solea-breizh-bijoux.fr"
-# Image de secours haute définition garantie pour éviter les rejets Google
-DEFAULT_IMAGE = "https://solea-breizh-bijoux.fr/images/logo.png"
+
+def process_hd_image(image_url):
+    """
+    Transforme une URL d'image en version Haute Définition (au moins 800x800 px)
+    pour respecter strictement les exigences Google Shopping (>= 500x500 px).
+    """
+    if not image_url or not image_url.startswith("http"):
+        return ""
+
+    # 1. Supprimer les suffixes et filtres de vignettes/miniatures de SumUp
+    clean_url = re.sub(r'-(small|thumb|medium|100x100|200x200|300x300|400x400)\.', '.', image_url)
+    clean_url = re.sub(r'/(small|thumb|medium|100x100|200x200|300x300|400x400)/', '/large/', clean_url)
+    clean_url = re.sub(r'\?(w|h|width|height|size)=\d+', '', clean_url)
+
+    # 2. Utilisation d'un proxy d'image HD sécurisé pour garantir 800x800 pixels minimum
+    # wsrv.nl convertit et redimensionne proprement l'image sur fond blanc sans déformation
+    encoded_url = urllib.parse.quote(clean_url, safe='')
+    hd_proxy_url = f"https://wsrv.nl/?url={encoded_url}&w=800&h=800&fit=contain&bg=white&output=jpg"
+
+    return hd_proxy_url
 
 def get_product_details_and_hd_image(product_url, session, headers):
-    """Visite la page produit individuelle pour extraire l'image HD et la description."""
+    """Visite la page produit individuelle pour capturer l'image HD et la description."""
     try:
         resp = session.get(product_url, headers=headers, timeout=15)
         if resp.status_code != 200:
-            return DEFAULT_IMAGE, ""
+            return "", ""
             
         soup = BeautifulSoup(resp.text, 'html.parser')
         
-        # 1. Image principale depuis les balises OpenGraph
         image_url = ""
+        # Balises OpenGraph (souvent la meilleure qualité sur les e-shops)
         og_image = soup.find('meta', property='og:image') or soup.find('meta', attrs={'name': 'og:image'})
         if og_image and og_image.get('content'):
             image_url = og_image['content'].strip()
             
-        # 2. Si non trouvée, balayage des images du DOM
+        # Si absente, cherche les balises <img> dans la page
         if not image_url:
             for img in soup.find_all('img'):
                 src = img.get('src') or img.get('data-src') or ''
@@ -31,7 +50,6 @@ def get_product_details_and_hd_image(product_url, session, headers):
                     image_url = src
                     break
 
-        # Nettoyage & formatage de l'URL d'image
         if image_url:
             if image_url.startswith('//'):
                 image_url = f"https:{image_url}"
@@ -39,21 +57,22 @@ def get_product_details_and_hd_image(product_url, session, headers):
                 image_url = f"{BASE_URL}{image_url}"
             elif not image_url.startswith('http'):
                 image_url = f"{BASE_URL}/{image_url}"
-        else:
-            image_url = DEFAULT_IMAGE
 
         # Description
         og_desc = soup.find('meta', property='og:description')
         desc = og_desc['content'].strip() if og_desc and og_desc.get('content') else ""
 
-        return image_url, desc
+        # Transformation en version HD 800x800px garantie
+        final_hd_image = process_hd_image(image_url) if image_url else ""
+
+        return final_hd_image, desc
 
     except Exception as e:
         print(f"⚠️ Erreur sur {product_url}: {e}")
-        return DEFAULT_IMAGE, ""
+        return "", ""
 
 def generate_xml():
-    print("➜ Extraction des produits et sécurisation des liens d'images...")
+    print("➜ Extraction des produits et génération des images HD (800x800 px)...")
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
@@ -88,7 +107,7 @@ def generate_xml():
             price_str = price_match.group(1).replace(',', '.')
             price_val = float(price_str)
 
-            # Titre
+            # Titre du produit
             title = None
             for line in lines:
                 if line.lower() in ['épuisé', 'epuise', 'out of stock', 'en stock']:
@@ -102,23 +121,19 @@ def generate_xml():
 
             seen_titles.add(title)
 
-            # Lien du bijou
+            # Lien unique vers la fiche du bijou
             link_tag = card if card.name == 'a' else card.find('a', href=True)
             prod_link = BASE_URL
             if link_tag and link_tag.get('href'):
                 href = link_tag['href']
                 prod_link = href if href.startswith('http') else f"{BASE_URL}{href}"
 
-            # Extraction de l'image et description
-            hd_image, hd_desc = DEFAULT_IMAGE, ""
+            # Extraction et mise à l'échelle HD de l'image
+            hd_image, hd_desc = "", ""
             if prod_link != BASE_URL:
                 hd_image, hd_desc = get_product_details_and_hd_image(prod_link, session, headers)
 
-            # Garantir qu'aucune URL d'image ne reste vide
-            if not hd_image or not hd_image.startswith('http'):
-                hd_image = DEFAULT_IMAGE
-
-            # Couleur
+            # Couleur automatique
             title_lower = title.lower()
             color = "Doré"
             if "argent" in title_lower:
@@ -149,7 +164,7 @@ def generate_xml():
 
     print(f"✓ {len(products)} produits traités.")
 
-    # Flux XML
+    # Construction du flux XML Google Shopping
     rss = ET.Element("rss", version="2.0", **{"xmlns:g": "http://base.google.com/ns/1.0"})
     channel = ET.SubElement(rss, "channel")
     
@@ -165,8 +180,9 @@ def generate_xml():
         ET.SubElement(item, "g:description").text = p['description']
         ET.SubElement(item, "g:link").text = p['link']
         
-        # Champ obligatoire garanti non vide
-        ET.SubElement(item, "g:image_link").text = p['image']
+        # Injection du lien image HD (seulement s'il existe)
+        if p['image']:
+            ET.SubElement(item, "g:image_link").text = p['image']
             
         ET.SubElement(item, "g:price").text = f"{p['price']:.2f} EUR"
         ET.SubElement(item, "g:condition").text = "new"
@@ -174,7 +190,7 @@ def generate_xml():
         ET.SubElement(item, "g:brand").text = "Solea Breizh Bijoux"
         ET.SubElement(item, "g:identifier_exists").text = "no"
 
-        # Conformes aux exigences Google Shopping
+        # Champs de conformité obligatoire
         ET.SubElement(item, "g:shipping_weight").text = "0.1 kg"
         ET.SubElement(item, "g:age_group").text = "adult"
         ET.SubElement(item, "g:gender").text = "female"
@@ -185,7 +201,7 @@ def generate_xml():
     with open("google-shopping.xml", "w", encoding="utf-8") as f:
         f.write(xml_str)
 
-    print("✓ Fichier 'google-shopping.xml' généré avec succès !")
+    print("✓ Fichier 'google-shopping.xml' généré avec succès avec images HD (800x800) !")
 
 if __name__ == "__main__":
     generate_xml()
