@@ -7,7 +7,7 @@
     <item>
       <g:id>bijou-7</g:id>
       <g:title>Bague anti stress Ambre</g:title>
-      <g:description>Bague anti stress Ambre - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague anti stress Ambre - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr/product/bague-anti-stress-ambre</g:link>
       <g:image_link>https://images.sumup.com/img_35XPRZHPJN8BFR9DFG7F5VGG4G</g:image_link>
       <g:price>14.00 EUR</g:price>
@@ -15,198 +15,235 @@
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-12</g:id>
       <g:title>Bague Bleuenn</g:title>
-      <g:description>Bague Bleuenn - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Bleuenn - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Bleu</g:color>
     </item>
     <item>
       <g:id>bijou-15</g:id>
       <g:title>Bague Capucine</g:title>
-      <g:description>Bague Capucine - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Capucine - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-18</g:id>
       <g:title>Bague Claire</g:title>
-      <g:description>Bague Claire - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Claire - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>10.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-21</g:id>
       <g:title>Bague Coline</g:title>
-      <g:description>Bague Coline - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Coline - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>10.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-25</g:id>
       <g:title>Bague Elise</g:title>
-      <g:description>Bague Elise - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Elise - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-28</g:id>
       <g:title>Bague Lilwenn</g:title>
-      <g:description>Bague Lilwenn - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Lilwenn - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-32</g:id>
       <g:title>Bague Margot</g:title>
-      <g:description>Bague Margot - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Margot - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
-    </item>
-    <item>
-      <g:id>bijou-33</g:id>
-      <g:title>Épuisé</g:title>
-      <g:description>Épuisé - Bijou artisanal par Solea Breizh Bijoux.</g:description>
-      <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
-      <g:price>9.00 EUR</g:price>
-      <g:condition>new</g:condition>
-      <g:availability>in_stock</g:availability>
-      <g:brand>Solea Breizh Bijoux</g:brand>
-      <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-35</g:id>
       <g:title>Bague Mélie</g:title>
-      <g:description>Bague Mélie - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Mélie - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>11.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-39</g:id>
       <g:title>Bague Sacha</g:title>
-      <g:description>Bague Sacha - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Sacha - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-43</g:id>
       <g:title>Boucles d’oreilles Alyssia</g:title>
-      <g:description>Boucles d’oreilles Alyssia - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Alyssia - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-46</g:id>
       <g:title>Boucles d’oreilles Anaïs</g:title>
-      <g:description>Boucles d’oreilles Anaïs - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Anaïs - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>8.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-49</g:id>
       <g:title>Boucles d’oreilles Chloé</g:title>
-      <g:description>Boucles d’oreilles Chloé - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Chloé - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>8.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-52</g:id>
       <g:title>Boucles d’oreilles Eve</g:title>
-      <g:description>Boucles d’oreilles Eve - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Eve - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-55</g:id>
       <g:title>Boucles d’oreilles Fleur</g:title>
-      <g:description>Boucles d’oreilles Fleur - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Fleur - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
     <item>
       <g:id>bijou-58</g:id>
       <g:title>Boucles d’oreilles Jenna</g:title>
-      <g:description>Boucles d’oreilles Jenna - Bijou artisanal par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Jenna - Bijou artisanal unique créé par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
-      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
       <g:brand>Solea Breizh Bijoux</g:brand>
       <g:identifier_exists>no</g:identifier_exists>
+      <g:shipping_weight>0.1 kg</g:shipping_weight>
+      <g:age_group>adult</g:age_group>
+      <g:gender>female</g:gender>
+      <g:color>Doré</g:color>
     </item>
   </channel>
 </rss>
