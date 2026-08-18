@@ -25,8 +25,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-12</g:id>
       <g:title>Bague Bleuenn</g:title>
-      <g:description>Bague Bleuenn - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Bleuenn - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -40,8 +41,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-15</g:id>
       <g:title>Bague Capucine</g:title>
-      <g:description>Bague Capucine - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Capucine - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -55,8 +57,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-18</g:id>
       <g:title>Bague Claire</g:title>
-      <g:description>Bague Claire - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Claire - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>10.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -70,8 +73,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-21</g:id>
       <g:title>Bague Coline</g:title>
-      <g:description>Bague Coline - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Coline - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>10.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -85,8 +89,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-25</g:id>
       <g:title>Bague Elise</g:title>
-      <g:description>Bague Elise - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Elise - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -100,8 +105,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-28</g:id>
       <g:title>Bague Lilwenn</g:title>
-      <g:description>Bague Lilwenn - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Lilwenn - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -115,8 +121,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-32</g:id>
       <g:title>Bague Margot</g:title>
-      <g:description>Bague Margot - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Margot - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -130,8 +137,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-35</g:id>
       <g:title>Bague Mélie</g:title>
-      <g:description>Bague Mélie - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Mélie - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>11.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -145,8 +153,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-39</g:id>
       <g:title>Bague Sacha</g:title>
-      <g:description>Bague Sacha - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Sacha - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -160,8 +169,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-43</g:id>
       <g:title>Boucles d’oreilles Alyssia</g:title>
-      <g:description>Boucles d’oreilles Alyssia - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Alyssia - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -175,8 +185,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-46</g:id>
       <g:title>Boucles d’oreilles Anaïs</g:title>
-      <g:description>Boucles d’oreilles Anaïs - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Anaïs - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>8.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -190,8 +201,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-49</g:id>
       <g:title>Boucles d’oreilles Chloé</g:title>
-      <g:description>Boucles d’oreilles Chloé - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Chloé - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>8.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -205,8 +217,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-52</g:id>
       <g:title>Boucles d’oreilles Eve</g:title>
-      <g:description>Boucles d’oreilles Eve - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Eve - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -220,8 +233,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-55</g:id>
       <g:title>Boucles d’oreilles Fleur</g:title>
-      <g:description>Boucles d’oreilles Fleur - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Fleur - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
@@ -235,8 +249,9 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-58</g:id>
       <g:title>Boucles d’oreilles Jenna</g:title>
-      <g:description>Boucles d’oreilles Jenna - Subtile création artisanale de la collection Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Jenna - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
+      <g:image_link>https://solea-breizh-bijoux.fr/images/logo.png</g:image_link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
       <g:availability>in_stock</g:availability>
