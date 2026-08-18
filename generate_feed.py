@@ -17,14 +17,12 @@ def generate_xml():
     products = []
     
     try:
-        # Parcours de la page principale de produits
         response = requests.get(f"{BASE_URL}/produits", headers=headers, timeout=30)
         if response.status_code != 200:
             response = requests.get(BASE_URL, headers=headers, timeout=30)
             
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        # Recherche des liens de produits et cartes produits dans le DOM
         cards = soup.find_all(['article', 'div'], class_=re.compile(r'product|card|item', re.I))
         if not cards:
             cards = soup.find_all('a', href=re.compile(r'/product/|/produit/'))
@@ -46,6 +44,9 @@ def generate_xml():
             # Identification du titre
             title = None
             for line in lines:
+                # Filtrer les mots de statut comme "Épuisé" ou les prix
+                if line.lower() in ['épuisé', 'epuise', 'out of stock', 'en stock']:
+                    continue
                 if line != price_match.group(0) and len(line) > 2 and not line.isdigit() and '€' not in line:
                     title = line
                     break
@@ -55,18 +56,18 @@ def generate_xml():
 
             seen_titles.add(title)
 
-            # Extraction du lien produit
+            # Link
             link_tag = card if card.name == 'a' else card.find('a', href=True)
             prod_link = BASE_URL
             if link_tag and link_tag.get('href'):
                 href = link_tag['href']
                 prod_link = href if href.startswith('http') else f"{BASE_URL}{href}"
 
-            # Extraction de l'image
+            # Extraction d'Image HD
             img_tag = card.find('img')
-            img_link = f"{BASE_URL}/images/logo.png"
+            img_link = ""
             if img_tag:
-                src = img_tag.get('src') or img_tag.get('data-src') or ''
+                src = img_tag.get('src') or img_tag.get('data-src') or img_tag.get('srcset', '').split(' ')[0]
                 if src:
                     if src.startswith('http'):
                         img_link = src
@@ -75,12 +76,27 @@ def generate_xml():
                     else:
                         img_link = f"{BASE_URL}{src}"
 
+            # Détection automatique de la couleur
+            title_lower = title.lower()
+            color = "Doré"
+            if "argent" in title_lower:
+                color = "Argenté"
+            elif "bleu" in title_lower:
+                color = "Bleu"
+            elif "rose" in title_lower:
+                color = "Rose"
+            elif "vert" in title_lower:
+                color = "Vert"
+            elif "noir" in title_lower:
+                color = "Noir"
+
             products.append({
                 'id': f"bijou-{idx+1}",
                 'title': title,
                 'price': price_val,
                 'link': prod_link,
-                'image': img_link
+                'image': img_link,
+                'color': color
             })
 
     except Exception as e:
@@ -101,21 +117,28 @@ def generate_xml():
         
         ET.SubElement(item, "g:id").text = p['id']
         ET.SubElement(item, "g:title").text = p['title']
-        ET.SubElement(item, "g:description").text = f"{p['title']} - Bijou artisanal par Solea Breizh Bijoux."
+        ET.SubElement(item, "g:description").text = f"{p['title']} - Bijou artisanal unique créé par Solea Breizh Bijoux."
         ET.SubElement(item, "g:link").text = p['link']
-        ET.SubElement(item, "g:image_link").text = p['image']
+        if p['image']:
+            ET.SubElement(item, "g:image_link").text = p['image']
         ET.SubElement(item, "g:price").text = f"{p['price']:.2f} EUR"
         ET.SubElement(item, "g:condition").text = "new"
         ET.SubElement(item, "g:availability").text = "in_stock"
         ET.SubElement(item, "g:brand").text = "Solea Breizh Bijoux"
         ET.SubElement(item, "g:identifier_exists").text = "no"
 
+        # Attributs requis pour corriger le blocage Google
+        ET.SubElement(item, "g:shipping_weight").text = "0.1 kg"
+        ET.SubElement(item, "g:age_group").text = "adult"
+        ET.SubElement(item, "g:gender").text = "female"
+        ET.SubElement(item, "g:color").text = p['color']
+
     xml_str = minidom.parseString(ET.tostring(rss, encoding='utf-8')).toprettyxml(indent="  ")
 
     with open("google-shopping.xml", "w", encoding="utf-8") as f:
         f.write(xml_str)
 
-    print(" Fichier 'google-shopping.xml' généré avec succès !")
+    print(" Fichier 'google-shopping.xml' mis à jour avec succès !")
 
 if __name__ == "__main__":
     generate_xml()
