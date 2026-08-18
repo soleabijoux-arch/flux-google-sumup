@@ -7,15 +7,27 @@ import unicodedata
 
 BASE_URL = "https://solea-breizh-bijoux.fr"
 
+# Liste de toutes vos catégories
+CATEGORIES = [
+    "/catégorie/bagues",
+    "/catégorie/boucles-d-oreilles",
+    "/catégorie/bracelets",
+    "/catégorie/colliers",
+    "/catégorie/joncs",
+    "/catégorie/sautoirs",
+    "/catégorie/accessoires",
+    "/produits"
+]
+
 def slugify(value):
-    """Transforme un titre en URL SumUp valide (ex: "Boucles d’oreilles Eve" -> "boucles-d-oreilles-eve")"""
+    """Transforme un titre en slug d'URL SumUp valide (ex: "Boucles d’oreilles Eve" -> "boucles-doreilles-eve")"""
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('utf-8')
-    value = value.replace("'", "-").replace("’", "-")
+    value = value.replace("'", "").replace("’", "")
     value = re.sub(r'[^\w\s-]', '', value.lower())
     return re.sub(r'[-\s]+', '-', value).strip('-')
 
 def get_product_details(product_url, session, headers):
-    """Tente de récupérer l'image et la description sur la fiche produit."""
+    """Récupère l'image HD et la description sur la fiche produit."""
     try:
         resp = session.get(product_url, headers=headers, timeout=10)
         if resp.status_code != 200:
@@ -29,7 +41,7 @@ def get_product_details(product_url, session, headers):
         if og_img and og_img.get('content'):
             image_url = og_img['content'].strip()
 
-        # 2. Image dans le DOM SumUp
+        # 2. Image fallback dans le DOM
         if not image_url:
             for img in soup.find_all('img'):
                 src = img.get('src') or img.get('data-src') or ''
@@ -53,7 +65,7 @@ def get_product_details(product_url, session, headers):
         return "", ""
 
 def generate_xml():
-    print("➜ Extraction et reconstruction dynamique des fiches produits...")
+    print("➜ Extraction multi-catégories en cours...")
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
@@ -62,92 +74,104 @@ def generate_xml():
 
     session = requests.Session()
     products = []
+    seen_titles = set()
     
-    try:
-        response = session.get(f"{BASE_URL}/produits", headers=headers, timeout=30)
-        if response.status_code != 200:
-            response = session.get(BASE_URL, headers=headers, timeout=30)
-            
-        soup = BeautifulSoup(response.text, 'html.parser')
-        
-        # Récupération de tous les blocs contenant des textes/prix
-        cards = soup.find_all(['article', 'div'], class_=re.compile(r'product|card|item', re.I))
-        if not cards:
-            cards = soup.find_all('a', href=re.compile(r'/product/|/produit/|/article/'))
+    # Exploration de toutes les catégories et paginations (pages 1 à 6)
+    urls_to_scrape = []
+    for cat in CATEGORIES:
+        urls_to_scrape.append(f"{BASE_URL}{cat}")
+        for p in range(1, 7):
+            urls_to_scrape.append(f"{BASE_URL}{cat}?page={p}")
 
-        seen_titles = set()
-
-        for idx, card in enumerate(cards):
-            text = card.get_text(separator='|', strip=True)
-            lines = [t.strip() for t in text.split('|') if t.strip()]
-            
-            # Détection du prix
-            price_match = re.search(r'(\d+[\.,]\d{2})\s*€', text)
-            if not price_match:
+    for target_url in urls_to_scrape:
+        try:
+            response = session.get(target_url, headers=headers, timeout=15)
+            if response.status_code != 200:
                 continue
                 
-            price_str = price_match.group(1).replace(',', '.')
-            price_val = float(price_str)
+            soup = BeautifulSoup(response.text, 'html.parser')
+            
+            cards = soup.find_all(['article', 'div'], class_=re.compile(r'product|card|item', re.I))
+            if not cards:
+                cards = soup.find_all('a', href=re.compile(r'/product/|/produit/|/article/'))
 
-            # Détection du titre du bijou
-            title = None
-            for line in lines:
-                if line.lower() in ['épuisé', 'epuise', 'out of stock', 'en stock']:
+            for card in cards:
+                text = card.get_text(separator='|', strip=True)
+                lines = [t.strip() for t in text.split('|') if t.strip()]
+                
+                # Détection du prix
+                price_match = re.search(r'(\d+[\.,]\d{2})\s*€', text)
+                if not price_match:
                     continue
-                if line != price_match.group(0) and len(line) > 2 and not line.isdigit() and '€' not in line:
-                    title = line
-                    break
+                    
+                price_str = price_match.group(1).replace(',', '.')
+                price_val = float(price_str)
 
-            if not title or title in seen_titles:
-                continue
+                # Détection du titre du bijou
+                title = None
+                for line in lines:
+                    if line.lower() in ['épuisé', 'epuise', 'out of stock', 'en stock', 'autres variantes disponibles']:
+                        continue
+                    if line != price_match.group(0) and len(line) > 2 and not line.isdigit() and '€' not in line:
+                        title = line
+                        break
 
-            seen_titles.add(title)
+                if not title or title in seen_titles:
+                    continue
 
-            # 1. Extraction ou reconstruction du lien produit
-            link_tag = card if card.name == 'a' else card.find('a', href=True)
-            prod_link = ""
-            if link_tag and link_tag.get('href') and '/product/' in link_tag['href']:
-                href = link_tag['href']
-                prod_link = href if href.startswith('http') else f"{BASE_URL}{href}"
-            else:
-                # Reconstruction automatique de l'URL pour SumUp
-                prod_link = f"{BASE_URL}/product/{slugify(title)}"
+                seen_titles.add(title)
 
-            # 2. Récupération de l'image et de la description
-            img_url, hd_desc = get_product_details(prod_link, session, headers)
+                # Extraction ou reconstruction du lien produit
+                link_tag = card if card.name == 'a' else card.find('a', href=True)
+                prod_link = ""
+                if link_tag and link_tag.get('href') and any(k in link_tag['href'] for k in ['/product/', '/article/']):
+                    href = link_tag['href']
+                    prod_link = href if href.startswith('http') else f"{BASE_URL}{href}"
+                else:
+                    prod_link = f"{BASE_URL}/product/{slugify(title)}"
 
-            # Couleur
-            title_lower = title.lower()
-            color = "Doré"
-            if "argent" in title_lower:
-                color = "Argenté"
-            elif "bleu" in title_lower:
-                color = "Bleu"
-            elif "rose" in title_lower:
-                color = "Rose"
-            elif "vert" in title_lower:
-                color = "Vert"
-            elif "noir" in title_lower:
-                color = "Noir"
+                # Récupération image et description
+                img_url, hd_desc = get_product_details(prod_link, session, headers)
 
-            description = hd_desc or f"{title} - Création artisanale en acier inoxydable par Solea Breizh Bijoux."
+                # Si l'URL /product/ ne répond pas avec une image, tester le format SumUp alternative /article/
+                if not img_url:
+                    alt_link = f"{BASE_URL}/article/{slugify(title)}"
+                    img_url, hd_desc = get_product_details(alt_link, session, headers)
+                    if img_url:
+                        prod_link = alt_link
 
-            products.append({
-                'id': f"bijou-{idx+1}",
-                'title': title,
-                'price': price_val,
-                'link': prod_link,
-                'image': img_url,
-                'description': description,
-                'color': color
-            })
+                # Déduction de la couleur
+                title_lower = title.lower()
+                color = "Doré"
+                if "argent" in title_lower:
+                    color = "Argenté"
+                elif "bleu" in title_lower:
+                    color = "Bleu"
+                elif "rose" in title_lower:
+                    color = "Rose"
+                elif "vert" in title_lower:
+                    color = "Vert"
+                elif "noir" in title_lower:
+                    color = "Noir"
 
-    except Exception as e:
-        print(f"❌ Erreur lors du scraping : {e}")
+                description = hd_desc or f"{title} - Création artisanale en acier inoxydable par Solea Breizh Bijoux."
 
-    print(f"✓ {len(products)} bijoux extraits.")
+                products.append({
+                    'id': f"bijou-{len(products)+1}",
+                    'title': title,
+                    'price': price_val,
+                    'link': prod_link,
+                    'image': img_url,
+                    'description': description,
+                    'color': color
+                })
 
-    # Génération du flux XML
+        except Exception:
+            continue
+
+    print(f"✓ {len(products)} produits extraits au total à travers toutes les catégories !")
+
+    # Génération XML
     rss = ET.Element("rss", version="2.0", **{"xmlns:g": "http://base.google.com/ns/1.0"})
     channel = ET.SubElement(rss, "channel")
     
@@ -163,7 +187,6 @@ def generate_xml():
         ET.SubElement(item, "g:description").text = p['description']
         ET.SubElement(item, "g:link").text = p['link']
         
-        # Inscription obligatoire de l'image (si disponible)
         if p['image']:
             ET.SubElement(item, "g:image_link").text = p['image']
             
@@ -173,7 +196,6 @@ def generate_xml():
         ET.SubElement(item, "g:brand").text = "Solea Breizh Bijoux"
         ET.SubElement(item, "g:identifier_exists").text = "no"
 
-        # Attributs requis par Google
         ET.SubElement(item, "g:shipping_weight").text = "0.1 kg"
         ET.SubElement(item, "g:age_group").text = "adult"
         ET.SubElement(item, "g:gender").text = "female"
@@ -184,7 +206,7 @@ def generate_xml():
     with open("google-shopping.xml", "w", encoding="utf-8") as f:
         f.write(xml_str)
 
-    print("✓ Fichier 'google-shopping.xml' régénéré avec succès !")
+    print("✓ Fichier 'google-shopping.xml' régénéré !")
 
 if __name__ == "__main__":
     generate_xml()
