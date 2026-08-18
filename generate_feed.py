@@ -8,8 +8,9 @@ import unicodedata
 BASE_URL = "https://solea-breizh-bijoux.fr"
 
 def slugify(value):
-    """Transforme un titre en URL SumUp valide (ex: 'Bague Bleuenn' -> 'bague-bleuenn')"""
+    """Transforme un titre en URL SumUp valide (ex: "Boucles d’oreilles Eve" -> "boucles-d-oreilles-eve")"""
     value = unicodedata.normalize('NFKD', value).encode('ascii', 'ignore').decode('utf-8')
+    value = value.replace("'", "-").replace("’", "-")
     value = re.sub(r'[^\w\s-]', '', value.lower())
     return re.sub(r'[-\s]+', '-', value).strip('-')
 
