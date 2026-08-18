@@ -3,7 +3,7 @@
   <channel>
     <title>Solea Breizh Bijoux</title>
     <link>https://solea-breizh-bijoux.fr</link>
-    <description>Catalogue de bijoux artisanaux Solea Breizh Bijoux</description>
+    <description>Bijoux en acier inoxydable Solea Breizh Bijoux</description>
     <item>
       <g:id>bijou-7</g:id>
       <g:title>Bague anti stress Ambre</g:title>
@@ -25,7 +25,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-12</g:id>
       <g:title>Bague Bleuenn</g:title>
-      <g:description>Bague Bleuenn - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Bleuenn - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -40,7 +40,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-15</g:id>
       <g:title>Bague Capucine</g:title>
-      <g:description>Bague Capucine - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Capucine - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -55,7 +55,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-18</g:id>
       <g:title>Bague Claire</g:title>
-      <g:description>Bague Claire - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Claire - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>10.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -70,7 +70,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-21</g:id>
       <g:title>Bague Coline</g:title>
-      <g:description>Bague Coline - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Coline - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>10.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -85,7 +85,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-25</g:id>
       <g:title>Bague Elise</g:title>
-      <g:description>Bague Elise - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Elise - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -100,7 +100,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-28</g:id>
       <g:title>Bague Lilwenn</g:title>
-      <g:description>Bague Lilwenn - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Lilwenn - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -115,7 +115,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-32</g:id>
       <g:title>Bague Margot</g:title>
-      <g:description>Bague Margot - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Margot - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -130,7 +130,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-35</g:id>
       <g:title>Bague Mélie</g:title>
-      <g:description>Bague Mélie - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Mélie - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>11.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -145,7 +145,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-39</g:id>
       <g:title>Bague Sacha</g:title>
-      <g:description>Bague Sacha - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Bague Sacha - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>9.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -160,7 +160,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-43</g:id>
       <g:title>Boucles d’oreilles Alyssia</g:title>
-      <g:description>Boucles d’oreilles Alyssia - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Alyssia - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -175,7 +175,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-46</g:id>
       <g:title>Boucles d’oreilles Anaïs</g:title>
-      <g:description>Boucles d’oreilles Anaïs - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Anaïs - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>8.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -190,7 +190,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-49</g:id>
       <g:title>Boucles d’oreilles Chloé</g:title>
-      <g:description>Boucles d’oreilles Chloé - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Chloé - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>8.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -205,7 +205,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-52</g:id>
       <g:title>Boucles d’oreilles Eve</g:title>
-      <g:description>Boucles d’oreilles Eve - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Eve - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -220,7 +220,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-55</g:id>
       <g:title>Boucles d’oreilles Fleur</g:title>
-      <g:description>Boucles d’oreilles Fleur - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Fleur - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
@@ -235,7 +235,7 @@ Couleur : doré</g:description>
     <item>
       <g:id>bijou-58</g:id>
       <g:title>Boucles d’oreilles Jenna</g:title>
-      <g:description>Boucles d’oreilles Jenna - Création artisanale exclusive par Solea Breizh Bijoux.</g:description>
+      <g:description>Boucles d’oreilles Jenna - Création artisanale en acier inoxydable par Solea Breizh Bijoux.</g:description>
       <g:link>https://solea-breizh-bijoux.fr</g:link>
       <g:price>12.00 EUR</g:price>
       <g:condition>new</g:condition>
