@@ -7,7 +7,6 @@ import unicodedata
 
 BASE_URL = "https://solea-breizh-bijoux.fr"
 
-# Liste de toutes vos catégories
 CATEGORIES = [
     "/catégorie/bagues",
     "/catégorie/boucles-d-oreilles",
@@ -26,6 +25,16 @@ def slugify(value):
     value = re.sub(r'[^\w\s-]', '', value.lower())
     return re.sub(r'[-\s]+', '-', value).strip('-')
 
+def upscale_image_url(url):
+    """Force l'image SumUp en haute résolution (au moins 800x800)."""
+    if not url:
+        return ""
+    # Remplacement des paramètres de taille/vignette dans l'URL d'image SumUp si présents
+    url = re.sub(r'/_next/image\?url=', '', url)
+    url = re.sub(r'&w=\d+&q=\d+', '', url)
+    url = re.sub(r'\d+x\d+', '800x800', url)
+    return url
+
 def get_product_details(product_url, session, headers):
     """Récupère l'image HD et la description sur la fiche produit."""
     try:
@@ -35,7 +44,7 @@ def get_product_details(product_url, session, headers):
             
         soup = BeautifulSoup(resp.text, 'html.parser')
         
-        # 1. Image OpenGraph
+        # 1. Image OpenGraph (souvent la version HD)
         image_url = ""
         og_img = soup.find('meta', property='og:image') or soup.find('meta', attrs={'name': 'og:image'})
         if og_img and og_img.get('content'):
@@ -54,6 +63,8 @@ def get_product_details(product_url, session, headers):
                 image_url = f"https:{image_url}"
             elif image_url.startswith('/'):
                 image_url = f"{BASE_URL}{image_url}"
+            
+            image_url = upscale_image_url(image_url)
 
         # Description OpenGraph
         og_desc = soup.find('meta', property='og:description')
@@ -61,14 +72,14 @@ def get_product_details(product_url, session, headers):
 
         return image_url, desc
 
-    except Exception as e:
+    except Exception:
         return "", ""
 
 def generate_xml():
-    print("➜ Extraction multi-catégories en cours...")
+    print("➜ Extraction multi-catégories et optimisation des images HD...")
     
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',
+        'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
         'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7'
     }
 
@@ -76,7 +87,6 @@ def generate_xml():
     products = []
     seen_titles = set()
     
-    # Exploration de toutes les catégories et paginations (pages 1 à 6)
     urls_to_scrape = []
     for cat in CATEGORIES:
         urls_to_scrape.append(f"{BASE_URL}{cat}")
@@ -130,17 +140,16 @@ def generate_xml():
                 else:
                     prod_link = f"{BASE_URL}/product/{slugify(title)}"
 
-                # Récupération image et description
+                # Récupération image HD et description
                 img_url, hd_desc = get_product_details(prod_link, session, headers)
 
-                # Si l'URL /product/ ne répond pas avec une image, tester le format SumUp alternative /article/
                 if not img_url:
                     alt_link = f"{BASE_URL}/article/{slugify(title)}"
                     img_url, hd_desc = get_product_details(alt_link, session, headers)
                     if img_url:
                         prod_link = alt_link
 
-                # Déduction de la couleur
+                # Couleur
                 title_lower = title.lower()
                 color = "Doré"
                 if "argent" in title_lower:
@@ -169,7 +178,7 @@ def generate_xml():
         except Exception:
             continue
 
-    print(f"✓ {len(products)} produits extraits au total à travers toutes les catégories !")
+    print(f"✓ {len(products)} produits extraits et optimisés !")
 
     # Génération XML
     rss = ET.Element("rss", version="2.0", **{"xmlns:g": "http://base.google.com/ns/1.0"})
